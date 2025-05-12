@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.Chronometer;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -25,13 +23,13 @@ public class MainActivity extends AppCompatActivity {
 
     Chronometer chronometer;
     RadioGroup rg;
-    RadioButton rbDate,rbTime;
+    RadioButton rbDate, rbTime;
     DatePicker calendar;
     TimePicker timePicker;
     TextView textResult;
-//    Button btnStart,btnDone;
+    //    Button btnStart,btnDone;
     int selectedYear, selectedMonth, selectedDay;
-    int selectedHour,selectedMinute;
+    int selectedHour, selectedMinute;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -46,61 +44,69 @@ public class MainActivity extends AppCompatActivity {
         });
 
         chronometer = findViewById(R.id.chrono);
-        rbDate=findViewById(R.id.rb_date);
-        rbTime=findViewById(R.id.rb_time);
-        calendar=findViewById(R.id.calendar);
-        timePicker=findViewById(R.id.time_pick);
-        textResult=findViewById(R.id.text_result);
-//        btnDone=findViewById(R.id.btn_done);
+        rbDate = findViewById(R.id.rb_date);
+        rbTime = findViewById(R.id.rb_time);
+        calendar = findViewById(R.id.calendar);
+        timePicker = findViewById(R.id.time_pick);
+        textResult = findViewById(R.id.text_result);
+//        btnDone = findViewById(R.id.btn_done);
 
+        rbDate.setVisibility(View.INVISIBLE);
+        rbTime.setVisibility(View.INVISIBLE);
         calendar.setVisibility(View.INVISIBLE);
         timePicker.setVisibility(View.INVISIBLE);
+
         rbDate.setOnClickListener(rbListener);
         rbTime.setOnClickListener(rbListener);
         chronometer.setOnClickListener(chronoListener);
         textResult.setOnLongClickListener(textListener);
-//        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-//            @Override
-//            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-//                selectedYear=year;
-//                selectedMonth=month;
-//                selectedDay=dayOfMonth;
-//            }
-//        });
     }
-    View.OnLongClickListener textListener=new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            chronometer.stop();
-            chronometer.setTextColor(Color.BLUE);
-            selectedYear=calendar.getYear();
-            selectedMonth=calendar.getMonth();
-            selectedHour=timePicker.getHour();
-            selectedMinute=timePicker.getMinute();
-            textResult.setText(selectedYear+"년 "+selectedMonth+"월 "+selectedDay+"일 "+selectedHour+"시 "+selectedMinute+"분 예약완료됨");
-            return true;
-        }
-    };
-    View.OnClickListener chronoListener=new View.OnClickListener(){
+
+    View.OnClickListener chronoListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             chronometer.setBase(SystemClock.elapsedRealtime());
             chronometer.start();
             chronometer.setTextColor(Color.RED);
+
+            rbDate.setVisibility(View.VISIBLE);
+            rbTime.setVisibility(View.VISIBLE);
         }
     };
 
-    View.OnClickListener rbListener=new View.OnClickListener() {
+    View.OnClickListener rbListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             calendar.setVisibility(View.INVISIBLE);
             timePicker.setVisibility(View.INVISIBLE);
-            RadioButton rbEvent=(RadioButton) v;
-            if(rbEvent==rbTime){
+            RadioButton rbEvent = (RadioButton) v;
+            if (rbEvent == rbTime) {
                 calendar.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 timePicker.setVisibility(View.VISIBLE);
             }
+        }
+    };
+
+    View.OnLongClickListener textListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            chronometer.stop();
+            chronometer.setTextColor(Color.BLUE);
+            selectedYear = calendar.getYear();
+            selectedMonth = calendar.getMonth() + 1;
+            selectedDay = calendar.getDayOfMonth();
+            selectedHour = timePicker.getHour();
+            selectedMinute = timePicker.getMinute();
+            textResult.setText(selectedYear + "년 " + selectedMonth + "월 " + selectedDay + "일 "
+                    + selectedHour + "시 " + selectedMinute + "분 예약완료됨");
+
+            rbDate.setVisibility(View.INVISIBLE);
+            rbTime.setVisibility(View.INVISIBLE);
+            calendar.setVisibility(View.INVISIBLE);
+            timePicker.setVisibility(View.INVISIBLE);
+
+            return true;
         }
     };
 }
